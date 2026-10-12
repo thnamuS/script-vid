@@ -1,0 +1,60 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--foreground);
+  --color-popover: var(--card);
+  --color-popover-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #eef1ed;
+  --color-secondary-foreground: var(--foreground);
+  --color-muted: #f1f2ee;
+  --color-muted-foreground: #6b746f;
+  --color-accent: #eaf2ed;
+  --color-accent-foreground: var(--primary);
+  --color-destructive: #b33c3c;
+  --color-border: var(--border);
+  --color-input: var(--border);
+  --color-ring: #679881;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}
+:root {
+  color-scheme: light;
+  --background: #f7f8f4;
+  --foreground: #24322c;
+  --card: #ffffff;
+  --primary: #23513e;
+  --border: #e3e7df;
+}
+@layer base {
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground; font-family: Arial, Helvetica, sans-serif; -webkit-font-smoothing: antialiased; }
+  button:not(:disabled), summary { cursor: pointer; }
+  button:disabled { cursor: not-allowed; }
+  a, button, input, textarea, select, summary { -webkit-tap-highlight-color: transparent; }
+  a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid #679881; outline-offset: 4px; }
+  ::selection { background: #d8e9df; color: #173c2c; }
+}
+@layer components {
+  .panel { @apply rounded-xl border border-border bg-white; }
+  .eyebrow { @apply text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500; }
+  .text-link { @apply inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline; }
+  .toolbar { @apply flex flex-wrap items-center justify-between gap-3; }
+  .notice { @apply rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800; }
+  .error-notice { @apply rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800; }
+}
+progress { border: 0; border-radius: 999px; overflow: hidden; background: #eaf0e9; }
+progress::-webkit-progress-bar { background: #eaf0e9; border-radius: 999px; }
+progress::-webkit-progress-value { background: #46745a; border-radius: 999px; transition: width 250ms; }
+progress::-moz-progress-bar { background: #46745a; border-radius: 999px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
