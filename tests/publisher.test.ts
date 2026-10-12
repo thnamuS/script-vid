@@ -61,6 +61,8 @@ test('standard redirects support five hops across hosts and check redirected pag
 test('DNS, SSL, timeouts and unsafe redirected destinations never imply permission', async () => {
   const dns = (async () => { throw Object.assign(Error('not found'), { code: 'ENOTFOUND' }) }) as HttpDependencies['lookup']
   await assert.rejects(createPublicFetcher({ lookup: dns })('https://example.com/'), /DNS failure.*ENOTFOUND/)
+  const hangingDns = (() => new Promise(() => {})) as HttpDependencies['lookup']
+  await assert.rejects(createPublicFetcher({ lookup: hangingDns, dnsTimeout: 5, sleep: async () => {} })('https://example.com/'), /DNS lookup timed out/)
   const tls = transport([{ error: 'CERT_HAS_EXPIRED' }])
   await assert.rejects(createPublicFetcher({ lookup, request: tls.request })('https://example.com/'), /SSL failure/)
   assert.equal(tls.calls(), 1)
@@ -82,6 +84,8 @@ test('robots honors merged groups, specific agent, longest matches, allow ties a
 })
 
 test('robots caches absence on confirmed 404/410 but fails closed on other statuses and invalid bodies', async () => {
+  await createRobotsChecker(async () => page(''))('https://example.com/news')
+  await assert.rejects(createRobotsChecker(async () => page('User-agent: *\nDisallow: /'))('https://example.com/news'), /disallows/)
   for (const status of [404,410]) {
     let calls = 0
     const check = createRobotsChecker(async () => { calls++; throw new PublisherError(`Publisher returned HTTP ${status}`, 'HTTP_STATUS', status) })
